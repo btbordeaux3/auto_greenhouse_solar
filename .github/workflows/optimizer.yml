@@ -1,0 +1,33 @@
+name: Greenhouse Optimizer
+
+on:
+  schedule:
+    - cron: '0 * * * *'      # every hour
+  workflow_dispatch:          # manual trigger button
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache optimizer state
+        uses: actions/cache@v4
+        with:
+          path: finished_optimization_code/optimizer_state.json
+          key: optimizer-state-${{ github.run_id }}
+          restore-keys: optimizer-state-
+
+      - name: Install dependencies
+        run: pip install numpy casadi requests
+
+      - name: Run optimizer cycle
+        working-directory: finished_optimization_code
+        env:
+          GREENHOUSE_ENDPOINT_PASSWORD: ${{ secrets.GREENHOUSE_PASSWORD }}
+        run: python run_cycle.py
