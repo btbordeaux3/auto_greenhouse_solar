@@ -392,9 +392,10 @@ def solve_mpc(
     opti.minimize(cost)
 
     opts = {
-        "ipopt.print_level": 5 if verbose else 0,
+        "ipopt.print_level": 5 if verbose else 1,
         "print_time": 1 if verbose else 0,
-        "ipopt.max_iter": MPC_MAX_ITER,
+        "ipopt.max_iter": min(MPC_MAX_ITER, 5000),
+        "ipopt.max_cpu_time": 120,
         "ipopt.tol": MPC_TOL,
         "ipopt.acceptable_tol": 1e-3,
         "ipopt.linear_solver": "mumps",
