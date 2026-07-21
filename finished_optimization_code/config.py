@@ -194,16 +194,16 @@ SOIL_SCALE_MAX = 2.0             # max pump multiplier when bone dry
 # ──────────────────────────────────────────────────────────────────────────────
 # Soil moisture model
 # Simple bucket model: pump adds water, evapotranspiration removes it.
-# Soil moisture is 0-25% on sensor (0=dry, 25=saturated).
+# Soil moisture is 0-100% on sensor (0=dry, 100=saturated).
 # ──────────────────────────────────────────────────────────────────────────────
-SOIL_FIELD_CAPACITY = 20.0        # % — sensor reading at saturation
-SOIL_WILTING_POINT = 3.8          # % — below this, plants wilt
-SOIL_MAX_PUMP_RATE = 0.625        # % per minute of pumping (scaled from 2.5 × 25/100)
-SOIL_ET_RATE = 0.0375             # % per hour — evapotranspiration rate (daytime)
+SOIL_FIELD_CAPACITY = 80.0        # % — sensor reading at saturation (0-100% scale)
+SOIL_WILTING_POINT = 15.0         # % — below this, plants wilt
+SOIL_MAX_PUMP_RATE = 2.5          # % per minute of pumping
+SOIL_ET_RATE = 0.15               # % per hour — evapotranspiration rate (daytime)
 SOIL_ET_NIGHT_SCALE = 0.3         # nighttime ET is 30% of daytime
-SOIL_DRAIN_RATE = 0.0125          # % per hour — gravity drainage above field capacity
-SOIL_RAIN_SCALE = 0.00025         # % per W/m² of GHI (scaled from 0.001 × 25/100)
-SOIL_INIT_DEFAULT = float(os.environ.get("GREENHOUSE_SOC_INIT", "10.0"))  # % — default initial soil moisture if unknown
+SOIL_DRAIN_RATE = 0.05            # % per hour — gravity drainage above field capacity
+SOIL_RAIN_SCALE = 0.001           # % per W/m² of GHI
+SOIL_INIT_DEFAULT = float(os.environ.get("GREENHOUSE_SOC_INIT", "40.0"))  # % — default initial soil moisture if unknown
 
 # ──────────────────────────────────────────────────────────────────────────────
 # MPC objective weights for soil moisture
@@ -226,8 +226,8 @@ PLANT_STATES = {
         "lights_daily_h": LIGHTS_DAILY_HOURS_GERMINATING,
         "temp_target_c": 28.0,      # warmer for germination
         "temp_band_c": 4.0,
-        "soil_target": 12.5,        # 50% of FC scaled to 0-25% sensor
-        "soil_band": 2.5,           # ±2.5% (10-15% range)
+        "soil_target": 50.0,        # 50% of FC (0-100% scale)
+        "soil_band": 10.0,          # ±10% range
         "alert_user": False,
         "description": "Seeds sprouting, light water, no lights needed",
     },
@@ -236,8 +236,8 @@ PLANT_STATES = {
         "lights_daily_h": LIGHTS_DAILY_HOURS_GROWING,
         "temp_target_c": TARGET_C,
         "temp_band_c": TEMP_BAND,
-        "soil_target": 16.25,       # 65% of FC scaled to 0-25% sensor
-        "soil_band": 2.5,           # ±2.5% (13.75-18.75% range)
+        "soil_target": 65.0,        # 65% of FC (0-100% scale)
+        "soil_band": 10.0,          # ±10% range
         "alert_user": False,
         "description": "Active growth, high water and light",
     },
@@ -246,8 +246,8 @@ PLANT_STATES = {
         "lights_daily_h": LIGHTS_DAILY_HOURS_GROWING,
         "temp_target_c": 25.0,      # slightly cooler for harvest
         "temp_band_c": 5.0,
-        "soil_target": 13.75,       # 55% of FC scaled to 0-25% sensor
-        "soil_band": 2.5,           # ±2.5% (11.25-16.25% range)
+        "soil_target": 55.0,        # 55% of FC (0-100% scale)
+        "soil_band": 10.0,          # ±10% range
         "alert_user": True,
         "description": "Harvest ready — dry out, alert user",
     },

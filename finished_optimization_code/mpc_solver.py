@@ -271,7 +271,7 @@ def solve_mpc(
     opti.subject_to(Soil[0] == soil_moisture)
     opti.subject_to(Soil_next == Soil_curr + d_soil)
     opti.subject_to(Soil_next >= 0)
-    opti.subject_to(Soil_next <= 25.0)
+    opti.subject_to(Soil_next <= SOIL_FIELD_CAPACITY)
 
     # ── Cost function ────────────────────────────────────────────────────────
     cost = ca.DM(0)
