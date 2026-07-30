@@ -242,6 +242,10 @@ def run_one_cycle():
     if isinstance(cost_val, float) and math.isnan(cost_val):
         cost_val = 0.0
 
+    soil_1step = float(result.soil_trajectory[1]) if len(result.soil_trajectory) > 1 else state.soil_moisture_pct
+    pv_predicted = round(float(result.pv_trajectory[0]), 1) if len(result.pv_trajectory) > 0 else 0.0
+    pv_actual = round(state.battery_voltage_out * state.battery_amps_in, 1) if state.battery_amps_in > 0 else 0.0
+
     mpc_data = {
         "solve_time_ms": round(result.solve_time_ms, 1),
         "status": result.status,
@@ -252,8 +256,11 @@ def run_one_cycle():
         "cost": round(cost_val, 4),
         "pred_soc_1step": round(soc_end_val * 100, 1),
         "pred_temp_1step_c": round(temp_end_val, 1),
-        "pv_predicted_w": round(float(result.pv_trajectory[0]), 1) if len(result.pv_trajectory) > 0 else 0.0,
-        "pv_actual_w": round(state.battery_voltage_out * state.battery_amps_in, 1) if state.battery_amps_in > 0 else 0.0,
+        "pred_soil_1step": round(soil_1step, 1),
+        "pv_predicted_w": pv_predicted,
+        "pv_actual_w": pv_actual,
+        "pv_daily_kwh": round(float(daily_solar_kwh[0]), 3) if len(daily_solar_kwh) > 0 else 0.0,
+        "cloud_cover": round(float(forecast.cloud_cover[0]), 0) if forecast is not None and len(forecast.cloud_cover) > 0 else None,
     }
 
     success = put_commands(

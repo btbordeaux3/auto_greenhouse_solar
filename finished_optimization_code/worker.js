@@ -22,6 +22,8 @@ export default {
     // Non-blocking D1 append — runs after response is sent
     function logObservation(state, ts) {
       if (!env.DB) return;
+      const soil6 = (state.soil || []).slice(0, 6);
+      while (soil6.length < 6) soil6.push(null);
       ctx.waitUntil(
         env.DB.prepare(
           `INSERT INTO observations
@@ -35,7 +37,7 @@ export default {
             state.soc ?? null,
             state.temperature ?? null,
             state.humidity ?? null,
-            ...(state.soil || [null,null,null,null,null,null]).slice(0, 6),
+            ...soil6,
             state.battery?.in?.voltage ?? null,
             state.battery?.in?.amps ?? null,
             state.battery?.out?.voltage ?? null,
@@ -208,7 +210,10 @@ export default {
         const currentState = stored || defaultState;
 
         if (Array.isArray(data.soil)) {
-          const soil = [...(currentState.soil || defaultState.soil)];
+          const soil = Array.from({ length: 6 }, (_, i) => {
+            const cs = currentState.soil;
+            return (cs && cs[i] != null) ? cs[i] : null;
+          });
           for (let i = 0; i < 6; i++) {
             if (data.soil[i] !== undefined) soil[i] = data.soil[i];
           }
