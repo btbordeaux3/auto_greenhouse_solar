@@ -6,8 +6,8 @@ services:
       - ./data:/app/data
     environment:
       # Endpoint auth (set these!)
-      - GREENHOUSE_ENDPOINT_URL=https://greenhouse-api.ffnfghnhzt.workers.dev/
-      - GREENHOUSE_ENDPOINT_PASSWORD=s1717
+      - GREENHOUSE_ENDPOINT_URL=${GREENHOUSE_ENDPOINT_URL:-https://greenhouse-api.ffnfghnhzt.workers.dev/}
+      - GREENHOUSE_ENDPOINT_PASSWORD=${GREENHOUSE_ENDPOINT_PASSWORD:?set GREENHOUSE_ENDPOINT_PASSWORD in .env}
       # Daemon interval (seconds). Default 900 = 15 min
       - GREENHOUSE_INTERVAL=900
       # Initial SOC% for calibrator (default 50)

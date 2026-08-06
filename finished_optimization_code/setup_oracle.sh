@@ -49,19 +49,30 @@ echo ""
 echo "[3/5] Creating .env file..."
 ENV_FILE="$REPO_DIR/finished_optimization_code/.env"
 if [ ! -f "$ENV_FILE" ]; then
-    cat > "$ENV_FILE" << 'ENVEOF'
+    # Generate a strong random password (matches the Cloudflare worker secret `PASSWORD`)
+    RANDOM_PASSWORD="$(openssl rand -hex 32)"
+    cat > "$ENV_FILE" << ENVEOF
 # Greenhouse Optimizer — Environment Variables
 # Edit these values, then restart the daemon:
 #   docker compose up -d --build
+#
+# CRITICAL: this password MUST match the Cloudflare worker secret binding `PASSWORD`
+# (wrangler secret put PASSWORD). The value below is auto-generated and printed below.
 
 GREENHOUSE_ENDPOINT_URL=https://greenhouse-api.ffnfghnhzt.workers.dev/
-GREENHOUSE_ENDPOINT_PASSWORD=s1717
+GREENHOUSE_ENDPOINT_PASSWORD=$RANDOM_PASSWORD
 GREENHOUSE_INTERVAL=900
 GREENHOUSE_SOC_INIT=50
 GREENHOUSE_PUMP_LOCKOUT=false
 GREENHOUSE_QUIET=false
 ENVEOF
-    echo "  ✓ Created $ENV_FILE"
+    chmod 600 "$ENV_FILE"
+    echo "  ✓ Created $ENV_FILE (with a generated password)"
+    echo ""
+    echo "  ⚠ SET THE CLOUDFLARE WORKER SECRET to match this password:"
+    echo "      wrangler secret put PASSWORD"
+    echo "      (paste: $RANDOM_PASSWORD)"
+    echo ""
     echo "  ⚠ EDIT THIS FILE with your settings before starting the daemon!"
 else
     echo "  ✓ .env already exists, skipping"

@@ -14,7 +14,12 @@ ENDPOINT_URL = os.environ.get(
     "GREENHOUSE_ENDPOINT_URL",
     "https://greenhouse-api.ffnfghnhzt.workers.dev/",
 )
-ENDPOINT_PASSWORD = os.environ.get("GREENHOUSE_ENDPOINT_PASSWORD", "s1717")
+ENDPOINT_PASSWORD = os.environ.get("GREENHOUSE_ENDPOINT_PASSWORD")
+if not ENDPOINT_PASSWORD:
+    raise RuntimeError(
+        "GREENHOUSE_ENDPOINT_PASSWORD is not set. Set it in the environment or .env "
+        "(see env.example)."
+    )
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Location (Havelock, NC) — for weather API
