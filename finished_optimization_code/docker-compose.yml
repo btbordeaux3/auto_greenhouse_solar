@@ -1,0 +1,17 @@
+services:
+  greenhouse-optimizer:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+    environment:
+      # Endpoint auth (set these!)
+      - GREENHOUSE_ENDPOINT_URL=https://greenhouse-api.ffnfghnhzt.workers.dev/
+      - GREENHOUSE_ENDPOINT_PASSWORD=s1717
+      # Daemon interval (seconds). Default 900 = 15 min
+      - GREENHOUSE_INTERVAL=900
+      # Initial SOC% for calibrator (default 50)
+      - GREENHOUSE_SOC_INIT=50
+      # Flags: pass "true" to enable
+      - GREENHOUSE_PUMP_LOCKOUT=false
+      - GREENHOUSE_QUIET=false
