@@ -2,7 +2,7 @@ name: Greenhouse Optimizer
 
 on:
   schedule:
-    - cron: '*/15 * * * *'   # every 15 minutes
+    - cron: '0 * * * *'      # every hour
   workflow_dispatch:          # manual trigger button
 
 jobs:
